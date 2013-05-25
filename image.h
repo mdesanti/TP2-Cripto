@@ -39,6 +39,7 @@ typedef struct {
 typedef struct {
     bitmap_header* header;
     char * data;
+    char * path;
 } image;
 
 #endif

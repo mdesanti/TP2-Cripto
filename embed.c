@@ -8,10 +8,8 @@
 
 #include <stdio.h>
 #include "image.h"
-#include <openssl/aes.h>
-#include <openssl/des.h>
+#include "embed.h"
 
 image* embedLSB1(image* in, char* toHide, image* hideHere) {
-    
     
 }

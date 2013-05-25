@@ -81,3 +81,13 @@ void saveImage(char * outputFile, image * img) {
     
     fclose(out);
 }
+
+image* copyImg(image * img) {
+    image* copy = (image*)malloc(sizeof(image));
+    
+    copy->header = img->header;
+    copy->data = malloc(sizeof(img->data));
+    strcpy(copy->data, img->data);
+    
+    return copy;
+}
