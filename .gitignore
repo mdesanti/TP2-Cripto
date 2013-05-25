@@ -1,1 +1,19 @@
 TP2_Cripto.1
+# Object files
+*.o
+
+# Libraries
+*.lib
+*.a
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+>>>>>>> ef44d74c0290b4a88dd5f65d1bdd6c04f33fad64
