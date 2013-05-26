@@ -12,5 +12,6 @@
 image * loadImage(char* input);
 void saveImage(char* outputFilem, image * img);
 image* copyImg(image * img);
+char * toCharArray(image * img);
 
 #endif

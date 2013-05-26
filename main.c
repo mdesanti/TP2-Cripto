@@ -19,7 +19,7 @@
 int parseInForEmbed(int argc, char * argv[]);
 char * getInFile(char* in);
 char * encryptFile(char* in, char* crypt_alg, char* method, char* pass);
-char * getSequence(char * in);
+char * getSequence(char * in, char * file);
 const char *get_filename_ext(const char *filename);
 
 int main(int argc, const char * argv[]) {
@@ -80,6 +80,8 @@ int parseInForEmbed(int argc, char * argv[]) {
     
     char * encryptedFile = NULL;
     image* original = loadImage(carrier);
+    char * array = toCharArray(original);
+    char * sequence = getSequence(in, array);
     encryptedFile = encryptFile(in, crypt_alg, method, password);
     image * carrierImg = loadImage(carrier);
     embedLSB1(original, encryptedFile, carrierImg);
@@ -90,7 +92,6 @@ int parseInForEmbed(int argc, char * argv[]) {
 
 char * encryptFile(char* in, char* crypt_alg, char* method, char* pass) {
     char * buffer = (char*)malloc(BUFFER_SIZE);
-    char * sequence = getSequence(in);
     snprintf(buffer, BUFFER_SIZE, "openssl enc -%s-%s -in %s -out /tmp/cripto.enc -pass pass:%s\n", crypt_alg, method, in, pass);
     printf("%s\n", buffer);
     if(system(buffer) == -1) {
@@ -99,30 +100,16 @@ char * encryptFile(char* in, char* crypt_alg, char* method, char* pass) {
     return getInFile("/tmp/cripto.enc");
 }
 
-char * getSequence(char * in) {
-    char *buffer = NULL;
-    char *result = NULL;
-    char * extension = get_filename_ext(in);
-    FILE *fh = fopen(in, "rb");
-//    FILE *out = NULL;
-    int n = 0;
-    if (fh != NULL) {
-        fseek(fh, 0L, SEEK_END);
-        long s = ftell(fh);
-        rewind(fh);
-        buffer = malloc(s);
-        if ( buffer != NULL ) {
-            fread(buffer, s, 1, fh);
-            printf("%s\n", buffer);
-            fclose(fh); fh = NULL;
-        }
-//        result = malloc(s+2000); //cuanto le ponemos aca?
-//        snprintf(result,(s+2000), "%lu%s%s%c", s, buffer, extension,'\0');
-//        out = fopen("/tmp/aux.txt", "w");
-//        n=fwrite(result,sizeof(char),sizeof(result),out);
-//        fclose(out);
-    }
-    return result;
+char * getSequence(char * in, char * file) {
+//	char *buffer = NULL;
+//    char *result = NULL;
+//    char * extension = get_filename_ext(in);
+//    result = malloc(s+2000); //cuanto le ponemos aca?
+//    snprintf(result,(s+2000), "%lu%s%s%c", s, buffer, extension,'\0');
+//	out = fopen("/tmp/aux.txt", "w");
+//    n=fwrite(result,sizeof(char),sizeof(result),out);
+//    fclose(out);
+//    return result;
 
 }
 

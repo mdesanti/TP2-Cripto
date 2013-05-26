@@ -91,3 +91,26 @@ image* copyImg(image * img) {
     
     return copy;
 }
+
+
+char * toCharArray(image * img) {
+    char * array = NULL;
+    long headerSize = sizeof(bitmap_header);
+    long dataSize = img->header->bitmapsize;
+    int i = 0;
+    array = malloc(headerSize + dataSize + 1);
+    if(array == NULL) {
+        printf("Not enough memory available\n");
+        exit(1);
+    }
+    strcpy(array, (char*)img->header);
+    char * data = img->data;
+    for(i = 0; i < dataSize; i++) {
+        array[headerSize+i] = data[i];
+    }
+    
+    return array;
+}
+
+
+
