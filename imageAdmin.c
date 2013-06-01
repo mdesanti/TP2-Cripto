@@ -7,6 +7,8 @@
 //
 
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "image.h"
 #include "imageAdmin.h"
 
@@ -103,11 +105,8 @@ char * toCharArray(image * img) {
         printf("Not enough memory available\n");
         exit(1);
     }
-    strcpy(array, (char*)img->header);
-    char * data = img->data;
-    for(i = 0; i < dataSize; i++) {
-        array[headerSize+i] = data[i];
-    }
+    memcpy(array, img->header, headerSize);
+    memcpy(&(array[headerSize]), img->data, dataSize);
     
     return array;
 }

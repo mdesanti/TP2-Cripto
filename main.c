@@ -7,6 +7,7 @@
 //
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include "image.h"
 #include "imageAdmin.h"
@@ -16,14 +17,19 @@
 
 #define BUFFER_SIZE 10*1024
 
+#define AES_128 MCRYPT_RIJNDAEL_128
+#define DES MCRYPT_3DES
+
 int parseInForEmbed(int argc, char * argv[]);
 char * getInFile(char* in);
 char * encryptFile(char* in, char* crypt_alg, char* method, char* pass);
-char * getSequence(char * in, char * file);
-const char *get_filename_ext(const char *filename);
+char * getSequence(char * in);
+char *get_filename_ext(const char *filename);
 
-int main(int argc, const char * argv[]) {
+int main(int argc, char * argv[]) {
     int code = 0;
+    
+    printf("hola\n");
     
     if(strcmp(argv[1], HIDE_INFO) == 0) {
         int code = parseInForEmbed(argc, argv);
@@ -91,26 +97,44 @@ int parseInForEmbed(int argc, char * argv[]) {
 
 
 char * encryptFile(char* in, char* crypt_alg, char* method, char* pass) {
-    char * buffer = (char*)malloc(BUFFER_SIZE);
-    snprintf(buffer, BUFFER_SIZE, "openssl enc -%s-%s -in %s -out /tmp/cripto.enc -pass pass:%s\n", crypt_alg, method, in, pass);
-    printf("%s\n", buffer);
-    if(system(buffer) == -1) {
-        printf("Error\n");
-    }
-    return getInFile("/tmp/cripto.enc");
+    char * IV = "BBBBBBBBCCCCCCCC";
+    char *key = "0123456789abcdef";
+    int keysize = 16; /* 128 bits */
+    char * sequence = getSequence(in);
+    int size = *((int*)sequence); //size of the sequence
+    
+    if(*pass){
+		char* buffer;
+	    int buffer_len = ceil(size/16.0)*16;
+	    buffer = calloc(1, buffer_len);
+	    memcpy(buffer, msg, buffer_len);
+
+		encrypt(buffer, buffer_len, IV, key, keysize, DES, "cbc"); 
+		char* encrypted = preappend_size(buffer);
+		printf("Encrypted:%d %s\n",*((int*)encrypted),encrypted+4);
+		msg = encrypted;
+	}
 }
 
-char * getSequence(char * in, char * file) {
-//	char *buffer = NULL;
-//    char *result = NULL;
-//    char * extension = get_filename_ext(in);
-//    result = malloc(s+2000); //cuanto le ponemos aca?
-//    snprintf(result,(s+2000), "%lu%s%s%c", s, buffer, extension,'\0');
-//	out = fopen("/tmp/aux.txt", "w");
-//    n=fwrite(result,sizeof(char),sizeof(result),out);
-//    fclose(out);
-//    return result;
-
+char * getSequence(char * in) {
+	FILE* in = fopen(in,"r");
+	char* extension = get_filename_ext(in);
+	int size = file_size(in);
+	int length = 4 + size + strlen(extension) + 1;
+	char* sequence = malloc(length);
+	char read, *pointer=sequence;
+	
+	p+=4; //move 4 forward to insert size
+	
+	memcpy(msg, &length, 4);
+	
+	while((read=fgetc(in))!=-1){
+		*pointer = read;
+		pointer++;
+	}
+	fclose(in);
+	strcpy(pointer,extension);
+	return sequence;
 }
 
 char * getInFile(char* in) {
@@ -129,8 +153,19 @@ char * getInFile(char* in) {
     return buffer;
 }
 
-const char *get_filename_ext(const char *filename) {
-    const char *dot = strrchr(filename, '.');
+int getFileSize(char * path) {
+	FILE *fh = fopen(in, "r");
+	int size = 0;
+    if (fh != NULL) {
+        fseek(fh, 0L, SEEK_END);
+        s = ftell(fh);
+        fclose(fh);
+    }
+    return size;
+}
+
+char *get_filename_ext(const char *filename) {
+    char *dot = strchr(filename, '.');
     if(!dot || dot == filename)
         return "";
     return dot;
