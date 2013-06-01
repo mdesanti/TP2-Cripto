@@ -16,4 +16,5 @@ TP2_Cripto.1
 *.exe
 *.out
 *.app
->>>>>>> ef44d74c0290b4a88dd5f65d1bdd6c04f33fad64
+VagrantFile
+.vagrant/
